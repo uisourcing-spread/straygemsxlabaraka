@@ -829,7 +829,26 @@ function VendeurApp({ profile, onSignOut }) {
   const goBack = ()=>{ setScreen("stock"); setSelected(null); };
 
   // Vendeur — utilise updateRecordVendor (champs restreints)
-  const handleSell = async (data)=>{ setSaving(true); try { const u=await updateRecordVendor(data.id,data); setItems(p=>p.map(i=>i.id===u.id?u:i)); writeLog("item.sold",{ref:data.ref,name:data.name,price:data.finalPrice||data.sellPrice,channel:data.channel}); showToast(`${data.name} vendu`); goBack(); } catch(e){ showToast("Oops — tu n'as pas les droits pour ça. Contact an admin.","error"); } finally{ setSaving(false); }};
+const handleSell = async (data) => {
+  // Guard — blocage si pièce déjà vendue
+  if (data.status === "sold") { 
+    showToast("Cette pièce est déjà vendue. Contacte un admin.","error"); 
+    goBack(); 
+    return; 
+  }
+  setSaving(true); 
+  try { 
+    const u = await updateRecordVendor(data.id, data); 
+    setItems(p=>p.map(i=>i.id===u.id?u:i)); 
+    writeLog("item.sold",{ref:data.ref,name:data.name,price:data.finalPrice||data.sellPrice,channel:data.channel}); 
+    showToast(`${data.name} vendu`); 
+    goBack(); 
+  } catch(e){ 
+    showToast("Oops — une erreur est survenue. Contacte un admin.","error"); 
+  } finally{ 
+    setSaving(false); 
+  }
+};  
   const handleEdit = async (data)=>{
     // Blocage côté UI — une pièce vendue ne peut pas être modifiée par le vendeur
     if(data.status==="sold"){ showToast("Modification rétroactive réservée à l'admin","error"); goBack(); return; }
