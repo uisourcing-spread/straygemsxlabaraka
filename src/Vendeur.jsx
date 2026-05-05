@@ -777,7 +777,7 @@ function VendeurApp({ profile, onSignOut }) {
   const [monthlyGoal,setMonthlyGoal] = useState(500);
   // Feature flag — activé si org_id = La Baraka ET role = vendor
   // TODO session 3 : rendre dynamique via settings
-  const LA_BARAKA_ORG_ID = "662c2570-c5fa-41db-9ff4-5e556024d968";
+  const LA_BARAKA_ORG_ID = "dfe3cff6-c5fa-41db-9ff4-5e556024d968";
   const isVendor          = profile?.role === "vendor";
   const isLaBarakaOrg     = profile?.org_id === LA_BARAKA_ORG_ID;
   const showPaymentMethod = useMemo(() => isVendor && isLaBarakaOrg,  [isVendor, isLaBarakaOrg]);
